@@ -4,7 +4,22 @@ extern int mm_init (void);
 extern void *mm_malloc (size_t size);
 extern void mm_free (void *ptr);
 extern void *mm_realloc(void *ptr, size_t size);
+#define WSIZE       4       /* word size (bytes) */  
+#define DSIZE       8       /* doubleword size (bytes) */
 
+#define RIGHT_CHLD(bp) ((void *)* (int *)(bp+WSIZE))
+#define LEFT_CHLD(bp) ((void *)* (int *)(bp))
+#define PUT_LEFT(bp, bq) (*(int *)(bp)) = (int)(bq)
+#define PUT_RIGHT(bp, bq) (*(int *)(bp+WSIZE)) = (int)(bq)
+
+static inline int ADJUSTSIZE(size_t size){
+   return (((size) + DSIZE + 7) / DSIZE ) * DSIZE;	
+}
+
+
+static inline int GETSIZE(void *bp){
+   return (*(int*) (bp-WSIZE)) & ~7;	
+}
 
 /* 
  * Students work in teams of one or two.  Teams enter their team name, 
